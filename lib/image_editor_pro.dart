@@ -40,12 +40,15 @@ class ImageEditorPro extends StatefulWidget {
   final Color bottomBarColor;
   final Directory? pathSave;
   final double? pixelRatio;
+  final XFile? defaultImage;
 
-  ImageEditorPro(
-      {required this.appBarColor,
-      required this.bottomBarColor,
-      required this.pathSave,
-      required this.pixelRatio});
+  ImageEditorPro({
+    required this.appBarColor,
+    required this.bottomBarColor,
+    required this.pathSave,
+    required this.pixelRatio,
+    this.defaultImage,
+  });
 
   @override
   _ImageEditorProState createState() => _ImageEditorProState();
@@ -108,7 +111,22 @@ class _ImageEditorProState extends State<ImageEditorPro> {
     //  multiwidget.clear();
     howmuchwidgetis = 0;
 
+    setupDefaultImage();
+
     super.initState();
+  }
+
+  Future<void> setupDefaultImage() async {
+    if (widget.defaultImage == null) return;
+
+    var decodedImage = await decodeImageFromList(
+        File(widget.defaultImage!.path).readAsBytesSync());
+
+    setState(() {
+      height = decodedImage.height;
+      width = decodedImage.width;
+      _image = File(widget.defaultImage!.path);
+    });
   }
 
   double flipValue = 0;
