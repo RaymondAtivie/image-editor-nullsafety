@@ -1,26 +1,25 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:image_editor_pro/modules/sliders.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:image_editor_pro/modules/all_emojies.dart';
-import 'package:image_editor_pro/modules/bottombar_container.dart';
-import 'package:image_editor_pro/modules/emoji.dart';
-import 'package:image_editor_pro/modules/text.dart';
-import 'package:image_editor_pro/modules/textview.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:signature/signature.dart';
-import 'dart:math' as math;
 
+import 'modules/all_emojies.dart';
+import 'modules/bottombar_container.dart';
 import 'modules/color_filter_generator.dart';
 import 'modules/colors_picker.dart'; // import this
+import 'modules/emoji.dart';
+import 'modules/sliders.dart';
+import 'modules/text.dart';
+import 'modules/textview.dart';
 
 TextEditingController heightcontroler = TextEditingController();
 TextEditingController widthcontroler = TextEditingController();
@@ -126,7 +125,7 @@ class _ImageEditorProState extends State<ImageEditorPro> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        brightness: Brightness.dark,
+        // brightness: Brightness.dark,
         backgroundColor: widget.appBarColor,
         actions: [
           IconButton(

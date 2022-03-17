@@ -18,7 +18,7 @@ dependencies:
   dio: ^4.0.0
   screenshot: ^1.2.3
   signature: ^4.1.1
-  flutter_colorpicker: ^0.4.0
+  flutter_colorpicker: ^1.0.3
 
   flutter_web_plugins:
     sdk: flutter
