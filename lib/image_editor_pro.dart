@@ -133,7 +133,7 @@ class _ImageEditorProState extends State<ImageEditorPro> {
     setState(() {
       height = decodedImage.height;
       width = decodedImage.width;
-      _image = File(widget.defaultImage!.path);
+      _image = File(imagePath);
     });
   }
 
