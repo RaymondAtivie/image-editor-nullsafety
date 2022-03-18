@@ -42,6 +42,8 @@ class ImageEditorPro extends StatefulWidget {
   final double? pixelRatio;
   final XFile? defaultImage;
   final String? defaultImagePath;
+  final bool hideCamera;
+  final bool hideSizing;
 
   ImageEditorPro({
     required this.appBarColor,
@@ -50,6 +52,8 @@ class ImageEditorPro extends StatefulWidget {
     required this.pixelRatio,
     this.defaultImage,
     this.defaultImagePath,
+    this.hideCamera = false,
+    this.hideSizing = false,
   });
 
   @override
@@ -154,83 +158,88 @@ class _ImageEditorProState extends State<ImageEditorPro> {
         // brightness: Brightness.dark,
         backgroundColor: widget.appBarColor,
         actions: [
-          IconButton(
-              icon: Icon(FontAwesomeIcons.boxes),
-              onPressed: () {
-                showCupertinoDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: Text('Select Height Width'),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () {
-                              var mHeight = int.tryParse(heightcontroler.text);
-                              var mWidth = int.tryParse(widthcontroler.text);
-                              if (mWidth == null || mHeight == null) {
+          if (!widget.hideSizing)
+            IconButton(
+                icon: Icon(FontAwesomeIcons.boxes),
+                onPressed: () {
+                  showCupertinoDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: Text('Select Height Width'),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () {
+                                var mHeight =
+                                    int.tryParse(heightcontroler.text);
+                                var mWidth = int.tryParse(widthcontroler.text);
+                                if (mWidth == null || mHeight == null) {
+                                  Navigator.pop(context);
+                                  return;
+                                }
+                                setState(() {
+                                  height = int.parse(heightcontroler.text);
+                                  width = int.parse(widthcontroler.text);
+                                });
+                                heightcontroler.clear();
+                                widthcontroler.clear();
                                 Navigator.pop(context);
-                                return;
-                              }
-                              setState(() {
-                                height = int.parse(heightcontroler.text);
-                                width = int.parse(widthcontroler.text);
-                              });
-                              heightcontroler.clear();
-                              widthcontroler.clear();
-                              Navigator.pop(context);
-                            },
-                            child: Text('Done'),
+                              },
+                              child: Text('Done'),
+                            ),
+                          ],
+                          content: SingleChildScrollView(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text('Define Height'),
+                                const SizedBox(
+                                  height: 10.0,
+                                ),
+                                TextField(
+                                    controller: heightcontroler,
+                                    keyboardType:
+                                        TextInputType.numberWithOptions(),
+                                    decoration: InputDecoration(
+                                        hintText: 'Height',
+                                        contentPadding:
+                                            EdgeInsets.only(left: 10),
+                                        border: OutlineInputBorder())),
+                                const SizedBox(
+                                  height: 10.0,
+                                ),
+                                Text('Define Width'),
+                                const SizedBox(
+                                  height: 10.0,
+                                ),
+                                TextField(
+                                    controller: widthcontroler,
+                                    keyboardType:
+                                        TextInputType.numberWithOptions(),
+                                    decoration: InputDecoration(
+                                        hintText: 'Width',
+                                        contentPadding:
+                                            EdgeInsets.only(left: 10),
+                                        border: OutlineInputBorder())),
+                              ],
+                            ),
                           ),
-                        ],
-                        content: SingleChildScrollView(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text('Define Height'),
-                              const SizedBox(
-                                height: 10.0,
-                              ),
-                              TextField(
-                                  controller: heightcontroler,
-                                  keyboardType:
-                                      TextInputType.numberWithOptions(),
-                                  decoration: InputDecoration(
-                                      hintText: 'Height',
-                                      contentPadding: EdgeInsets.only(left: 10),
-                                      border: OutlineInputBorder())),
-                              const SizedBox(
-                                height: 10.0,
-                              ),
-                              Text('Define Width'),
-                              const SizedBox(
-                                height: 10.0,
-                              ),
-                              TextField(
-                                  controller: widthcontroler,
-                                  keyboardType:
-                                      TextInputType.numberWithOptions(),
-                                  decoration: InputDecoration(
-                                      hintText: 'Width',
-                                      contentPadding: EdgeInsets.only(left: 10),
-                                      border: OutlineInputBorder())),
-                            ],
-                          ),
-                        ),
-                      );
-                    });
-              }),
+                        );
+                      });
+                }),
           IconButton(
               onPressed: () {
                 _controller.points.clear();
                 setState(() {});
               },
               icon: Icon(Icons.clear)),
-          IconButton(
-              onPressed: () {
-                bottomsheets();
-              },
-              icon: Icon(Icons.camera_alt)),
+          if (!widget.hideCamera)
+            IconButton(
+                onPressed: () {
+                  bottomsheets();
+                },
+                icon: Icon(Icons.camera_alt)),
           TextButton(
             onPressed: () {
               screenshotController
@@ -260,296 +269,111 @@ class _ImageEditorProState extends State<ImageEditorPro> {
       ),
       bottomNavigationBar: openbottomsheet
           ? Container()
-          : Container(
-              padding: EdgeInsets.all(0.0),
-              height: 70.0,
-              decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    blurRadius: 10.9,
-                    color: widget.bottomBarColor,
-                  ),
-                ],
-              ),
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: [
-                  BottomBarContainer(
-                    colors: widget.bottomBarColor,
-                    icons: FontAwesomeIcons.brush,
-                    ontap: () {
-                      // raise the [showDialog] widget
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: Text('Pick a color!'),
-                            content: SingleChildScrollView(
-                              child: ColorPicker(
-                                pickerColor: pickerColor,
-                                onColorChanged: changeColor,
-                                showLabel: true,
-                                pickerAreaHeightPercent: 0.8,
-                              ),
-                            ),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () {
-                                  setState(() => currentColor = pickerColor);
-                                  Navigator.pop(context);
-                                },
-                                child: Text('Got it'),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                    title: 'Brush',
-                  ),
-                  BottomBarContainer(
-                    colors: widget.bottomBarColor,
-                    icons: Icons.text_fields,
-                    ontap: () async {
-                      var value = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => TextEditorImage()));
-                      if (value == null || value['name'] == null) {
-                        print('true');
-                      } else {
-                        type.add(2);
-                        widgetJson.add(value);
-                        // fontsize.add(20);
-                        offsets.add(Offset.zero);
-                        //  colorList.add(value['color']);
-                        //    multiwidget.add(value['name']);
-                        howmuchwidgetis++;
-                      }
-                    },
-                    title: 'Text',
-                  ),
-                  BottomBarContainer(
-                    colors: widget.bottomBarColor,
-                    icons: Icons.flip,
-                    ontap: () {
-                      setState(() {
-                        flipValue = flipValue == 0 ? math.pi : 0;
-                      });
-                    },
-                    title: 'Flip',
-                  ),
-                  BottomBarContainer(
-                    colors: widget.bottomBarColor,
-                    icons: Icons.rotate_left,
-                    ontap: () {
-                      setState(() {
-                        rotateValue--;
-                      });
-                    },
-                    title: 'Rotate left',
-                  ),
-                  BottomBarContainer(
-                    colors: widget.bottomBarColor,
-                    icons: Icons.rotate_right,
-                    ontap: () {
-                      setState(() {
-                        rotateValue++;
-                      });
-                    },
-                    title: 'Rotate right',
-                  ),
-                  BottomBarContainer(
-                    colors: widget.bottomBarColor,
-                    icons: Icons.blur_on,
-                    ontap: () {
-                      showModalBottomSheet(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(10),
-                            topLeft: Radius.circular(10),
-                          ),
-                        ),
-                        context: context,
-                        builder: (context) {
-                          return StatefulBuilder(
-                            builder: (context, setS) {
-                              return Container(
-                                padding: EdgeInsets.all(20),
-                                height: 400,
-                                decoration: BoxDecoration(
-                                  color: Colors.black87,
-                                  borderRadius: BorderRadius.only(
-                                      topRight: Radius.circular(10),
-                                      topLeft: Radius.circular(10)),
+          : SafeArea(
+              child: Container(
+                padding: EdgeInsets.all(0.0),
+                height: 70.0,
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      blurRadius: 10.9,
+                      color: widget.bottomBarColor,
+                    ),
+                  ],
+                ),
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    BottomBarContainer(
+                      colors: widget.bottomBarColor,
+                      icons: FontAwesomeIcons.brush,
+                      ontap: () {
+                        // raise the [showDialog] widget
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text('Pick a color!'),
+                              content: SingleChildScrollView(
+                                child: ColorPicker(
+                                  pickerColor: pickerColor,
+                                  onColorChanged: changeColor,
+                                  showLabel: true,
+                                  pickerAreaHeightPercent: 0.8,
                                 ),
-                                child: Column(
-                                  children: [
-                                    Center(
-                                      child: Text(
-                                        'Slider Filter Color'.toUpperCase(),
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                    ),
-                                    Divider(
-
-                                        // height: 1,
-                                        ),
-                                    const SizedBox(
-                                      height: 20.0,
-                                    ),
-                                    Text(
-                                      'Slider Color'.toUpperCase(),
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                    Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Expanded(
-                                          child: BarColorPicker(
-                                              width: 300,
-                                              thumbColor: Colors.white,
-                                              cornerRadius: 10,
-                                              pickMode: PickMode.Color,
-                                              colorListener: (int value) {
-                                                setS(() {
-                                                  setState(() {
-                                                    colorValue = Color(value);
-                                                  });
-                                                });
-                                              }),
-                                        ),
-                                        TextButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              setS(() {
-                                                colorValue = Colors.transparent;
-                                              });
-                                            });
-                                          },
-                                          child: Text(
-                                            'Reset',
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 5.0,
-                                    ),
-                                    Text(
-                                      'Slider Blur'.toUpperCase(),
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                    const SizedBox(
-                                      height: 10.0,
-                                    ),
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: Slider(
-                                              activeColor: Colors.white,
-                                              inactiveColor: Colors.grey,
-                                              value: blurValue,
-                                              min: 0.0,
-                                              max: 10.0,
-                                              onChanged: (v) {
-                                                setS(() {
-                                                  setState(() {
-                                                    blurValue = v;
-                                                  });
-                                                });
-                                              }),
-                                        ),
-                                        TextButton(
-                                          onPressed: () {
-                                            setS(() {
-                                              setState(() {
-                                                blurValue = 0.0;
-                                              });
-                                            });
-                                          },
-                                          child: Text(
-                                            'Reset'.toUpperCase(),
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 5.0,
-                                    ),
-                                    Text(
-                                      'Slider Opacity',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                    const SizedBox(
-                                      height: 10.0,
-                                    ),
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: Slider(
-                                              activeColor: Colors.white,
-                                              inactiveColor: Colors.grey,
-                                              value: opacityValue,
-                                              min: 0.00,
-                                              max: 1.0,
-                                              onChanged: (v) {
-                                                setS(() {
-                                                  setState(() {
-                                                    opacityValue = v;
-                                                  });
-                                                });
-                                              }),
-                                        ),
-                                        TextButton(
-                                          onPressed: () {
-                                            setS(() {
-                                              setState(() {
-                                                opacityValue = 0.0;
-                                              });
-                                            });
-                                          },
-                                          child: Text(
-                                            'Reset'.toUpperCase(),
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    setState(() => currentColor = pickerColor);
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text('Got it'),
                                 ),
-                              );
-                            },
-                          );
-                        },
-                      );
-                    },
-                    title: 'Blur',
-                  ),
-                  BottomBarContainer(
-                    colors: widget.bottomBarColor,
-                    icons: FontAwesomeIcons.eraser,
-                    ontap: () {
-                      _controller.clear();
-                      //  type.clear();
-                      // // fontsize.clear();
-                      //  offsets.clear();
-                      // // multiwidget.clear();
-                      howmuchwidgetis = 0;
-                    },
-                    title: 'Eraser',
-                  ),
-                  BottomBarContainer(
-                    colors: widget.bottomBarColor,
-                    icons: Icons.photo,
-                    ontap: () {
-                      showModalBottomSheet(
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      title: 'Brush',
+                    ),
+                    BottomBarContainer(
+                      colors: widget.bottomBarColor,
+                      icons: Icons.text_fields,
+                      ontap: () async {
+                        var value = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => TextEditorImage()));
+                        if (value == null || value['name'] == null) {
+                          print('true');
+                        } else {
+                          type.add(2);
+                          widgetJson.add(value);
+                          // fontsize.add(20);
+                          offsets.add(Offset.zero);
+                          //  colorList.add(value['color']);
+                          //    multiwidget.add(value['name']);
+                          howmuchwidgetis++;
+                        }
+                      },
+                      title: 'Text',
+                    ),
+                    BottomBarContainer(
+                      colors: widget.bottomBarColor,
+                      icons: Icons.flip,
+                      ontap: () {
+                        setState(() {
+                          flipValue = flipValue == 0 ? math.pi : 0;
+                        });
+                      },
+                      title: 'Flip',
+                    ),
+                    BottomBarContainer(
+                      colors: widget.bottomBarColor,
+                      icons: Icons.rotate_left,
+                      ontap: () {
+                        setState(() {
+                          rotateValue--;
+                        });
+                      },
+                      title: 'Rotate left',
+                    ),
+                    BottomBarContainer(
+                      colors: widget.bottomBarColor,
+                      icons: Icons.rotate_right,
+                      ontap: () {
+                        setState(() {
+                          rotateValue++;
+                        });
+                      },
+                      title: 'Rotate right',
+                    ),
+                    BottomBarContainer(
+                      colors: widget.bottomBarColor,
+                      icons: Icons.blur_on,
+                      ontap: () {
+                        showModalBottomSheet(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.only(
                               topRight: Radius.circular(10),
@@ -558,25 +382,76 @@ class _ImageEditorProState extends State<ImageEditorPro> {
                           ),
                           context: context,
                           builder: (context) {
-                            return Container(
-                              height: 300,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.only(
-                                    topRight: Radius.circular(10),
-                                    topLeft: Radius.circular(10)),
-                                color: Colors.black87,
-                              ),
-                              child: StatefulBuilder(
-                                builder: (context, setS) {
-                                  return Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                            return StatefulBuilder(
+                              builder: (context, setS) {
+                                return Container(
+                                  padding: EdgeInsets.all(20),
+                                  height: 400,
+                                  decoration: BoxDecoration(
+                                    color: Colors.black87,
+                                    borderRadius: BorderRadius.only(
+                                        topRight: Radius.circular(10),
+                                        topLeft: Radius.circular(10)),
+                                  ),
+                                  child: Column(
                                     children: [
+                                      Center(
+                                        child: Text(
+                                          'Slider Filter Color'.toUpperCase(),
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ),
+                                      Divider(
+
+                                          // height: 1,
+                                          ),
+                                      const SizedBox(
+                                        height: 20.0,
+                                      ),
+                                      Text(
+                                        'Slider Color'.toUpperCase(),
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Expanded(
+                                            child: BarColorPicker(
+                                                width: 300,
+                                                thumbColor: Colors.white,
+                                                cornerRadius: 10,
+                                                pickMode: PickMode.Color,
+                                                colorListener: (int value) {
+                                                  setS(() {
+                                                    setState(() {
+                                                      colorValue = Color(value);
+                                                    });
+                                                  });
+                                                }),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                setS(() {
+                                                  colorValue =
+                                                      Colors.transparent;
+                                                });
+                                              });
+                                            },
+                                            child: Text(
+                                              'Reset',
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                       const SizedBox(
                                         height: 5.0,
                                       ),
                                       Text(
-                                        'Slider Hue'.toUpperCase(),
+                                        'Slider Blur'.toUpperCase(),
                                         style: TextStyle(color: Colors.white),
                                       ),
                                       const SizedBox(
@@ -588,13 +463,13 @@ class _ImageEditorProState extends State<ImageEditorPro> {
                                             child: Slider(
                                                 activeColor: Colors.white,
                                                 inactiveColor: Colors.grey,
-                                                value: hueValue,
-                                                min: -10.0,
+                                                value: blurValue,
+                                                min: 0.0,
                                                 max: 10.0,
                                                 onChanged: (v) {
                                                   setS(() {
                                                     setState(() {
-                                                      hueValue = v;
+                                                      blurValue = v;
                                                     });
                                                   });
                                                 }),
@@ -608,7 +483,7 @@ class _ImageEditorProState extends State<ImageEditorPro> {
                                               });
                                             },
                                             child: Text(
-                                              'Reset',
+                                              'Reset'.toUpperCase(),
                                               style: TextStyle(
                                                   color: Colors.white),
                                             ),
@@ -619,7 +494,7 @@ class _ImageEditorProState extends State<ImageEditorPro> {
                                         height: 5.0,
                                       ),
                                       Text(
-                                        'Slider Saturation',
+                                        'Slider Opacity',
                                         style: TextStyle(color: Colors.white),
                                       ),
                                       const SizedBox(
@@ -631,56 +506,13 @@ class _ImageEditorProState extends State<ImageEditorPro> {
                                             child: Slider(
                                                 activeColor: Colors.white,
                                                 inactiveColor: Colors.grey,
-                                                value: saturationValue,
-                                                min: -10.0,
-                                                max: 10.0,
-                                                onChanged: (v) {
-                                                  setS(() {
-                                                    setState(() {
-                                                      saturationValue = v;
-                                                    });
-                                                  });
-                                                }),
-                                          ),
-                                          TextButton(
-                                            onPressed: () {
-                                              setS(() {
-                                                setState(() {
-                                                  saturationValue = 0.0;
-                                                });
-                                              });
-                                            },
-                                            child: Text(
-                                              'Reset',
-                                              style: TextStyle(
-                                                  color: Colors.white),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 5.0,
-                                      ),
-                                      Text(
-                                        'Slider Brightness',
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                      const SizedBox(
-                                        height: 10.0,
-                                      ),
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                            child: Slider(
-                                                activeColor: Colors.white,
-                                                inactiveColor: Colors.grey,
-                                                value: brightnessValue,
-                                                min: 0.0,
+                                                value: opacityValue,
+                                                min: 0.00,
                                                 max: 1.0,
                                                 onChanged: (v) {
                                                   setS(() {
                                                     setState(() {
-                                                      brightnessValue = v;
+                                                      opacityValue = v;
                                                     });
                                                   });
                                                 }),
@@ -689,12 +521,12 @@ class _ImageEditorProState extends State<ImageEditorPro> {
                                             onPressed: () {
                                               setS(() {
                                                 setState(() {
-                                                  brightnessValue = 0.0;
+                                                  opacityValue = 0.0;
                                                 });
                                               });
                                             },
                                             child: Text(
-                                              'Reset',
+                                              'Reset'.toUpperCase(),
                                               style: TextStyle(
                                                   color: Colors.white),
                                             ),
@@ -702,37 +534,217 @@ class _ImageEditorProState extends State<ImageEditorPro> {
                                         ],
                                       ),
                                     ],
-                                  );
-                                },
-                              ),
+                                  ),
+                                );
+                              },
                             );
-                          });
-                    },
-                    title: 'Filter',
-                  ),
-                  BottomBarContainer(
-                    colors: widget.bottomBarColor,
-                    icons: FontAwesomeIcons.smile,
-                    ontap: () {
-                      var getemojis = showModalBottomSheet(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return Emojies();
-                          });
-                      getemojis.then((value) {
-                        if (value['name'] != null) {
-                          type.add(1);
-                          widgetJson.add(value);
-                          //    fontsize.add(20);
-                          offsets.add(Offset.zero);
-                          //  multiwidget.add(value);
-                          howmuchwidgetis++;
-                        }
-                      });
-                    },
-                    title: 'Emoji',
-                  ),
-                ],
+                          },
+                        );
+                      },
+                      title: 'Blur',
+                    ),
+                    BottomBarContainer(
+                      colors: widget.bottomBarColor,
+                      icons: FontAwesomeIcons.eraser,
+                      ontap: () {
+                        _controller.clear();
+                        //  type.clear();
+                        // // fontsize.clear();
+                        //  offsets.clear();
+                        // // multiwidget.clear();
+                        howmuchwidgetis = 0;
+                      },
+                      title: 'Eraser',
+                    ),
+                    BottomBarContainer(
+                      colors: widget.bottomBarColor,
+                      icons: Icons.photo,
+                      ontap: () {
+                        showModalBottomSheet(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(10),
+                                topLeft: Radius.circular(10),
+                              ),
+                            ),
+                            context: context,
+                            builder: (context) {
+                              return Container(
+                                height: 300,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                      topRight: Radius.circular(10),
+                                      topLeft: Radius.circular(10)),
+                                  color: Colors.black87,
+                                ),
+                                child: StatefulBuilder(
+                                  builder: (context, setS) {
+                                    return Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        const SizedBox(
+                                          height: 5.0,
+                                        ),
+                                        Text(
+                                          'Slider Hue'.toUpperCase(),
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                        const SizedBox(
+                                          height: 10.0,
+                                        ),
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: Slider(
+                                                  activeColor: Colors.white,
+                                                  inactiveColor: Colors.grey,
+                                                  value: hueValue,
+                                                  min: -10.0,
+                                                  max: 10.0,
+                                                  onChanged: (v) {
+                                                    setS(() {
+                                                      setState(() {
+                                                        hueValue = v;
+                                                      });
+                                                    });
+                                                  }),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                setS(() {
+                                                  setState(() {
+                                                    blurValue = 0.0;
+                                                  });
+                                                });
+                                              },
+                                              child: Text(
+                                                'Reset',
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          height: 5.0,
+                                        ),
+                                        Text(
+                                          'Slider Saturation',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                        const SizedBox(
+                                          height: 10.0,
+                                        ),
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: Slider(
+                                                  activeColor: Colors.white,
+                                                  inactiveColor: Colors.grey,
+                                                  value: saturationValue,
+                                                  min: -10.0,
+                                                  max: 10.0,
+                                                  onChanged: (v) {
+                                                    setS(() {
+                                                      setState(() {
+                                                        saturationValue = v;
+                                                      });
+                                                    });
+                                                  }),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                setS(() {
+                                                  setState(() {
+                                                    saturationValue = 0.0;
+                                                  });
+                                                });
+                                              },
+                                              child: Text(
+                                                'Reset',
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          height: 5.0,
+                                        ),
+                                        Text(
+                                          'Slider Brightness',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                        const SizedBox(
+                                          height: 10.0,
+                                        ),
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: Slider(
+                                                  activeColor: Colors.white,
+                                                  inactiveColor: Colors.grey,
+                                                  value: brightnessValue,
+                                                  min: 0.0,
+                                                  max: 1.0,
+                                                  onChanged: (v) {
+                                                    setS(() {
+                                                      setState(() {
+                                                        brightnessValue = v;
+                                                      });
+                                                    });
+                                                  }),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                setS(() {
+                                                  setState(() {
+                                                    brightnessValue = 0.0;
+                                                  });
+                                                });
+                                              },
+                                              child: Text(
+                                                'Reset',
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                ),
+                              );
+                            });
+                      },
+                      title: 'Filter',
+                    ),
+                    BottomBarContainer(
+                      colors: widget.bottomBarColor,
+                      icons: FontAwesomeIcons.smile,
+                      ontap: () {
+                        var getemojis = showModalBottomSheet(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Emojies();
+                            });
+                        getemojis.then((value) {
+                          if (value['name'] != null) {
+                            type.add(1);
+                            widgetJson.add(value);
+                            //    fontsize.add(20);
+                            offsets.add(Offset.zero);
+                            //  multiwidget.add(value);
+                            howmuchwidgetis++;
+                          }
+                        });
+                      },
+                      title: 'Emoji',
+                    ),
+                  ],
+                ),
               ),
             ),
       body: Center(
