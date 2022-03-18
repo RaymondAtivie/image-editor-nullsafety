@@ -81,7 +81,7 @@ class _SlidersState extends State<Sliders> {
                             width: 300,
                             thumbColor: Colors.white,
                             cornerRadius: 10,
-                            pickMode: PickMode.Grey,
+                            pickMode: PickMode.Color,
                             colorListener: (int value) {
                               setState(() {
                                 widgetJson[widget.index]['color'] =

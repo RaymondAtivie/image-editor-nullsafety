@@ -41,6 +41,7 @@ class ImageEditorPro extends StatefulWidget {
   final Directory? pathSave;
   final double? pixelRatio;
   final XFile? defaultImage;
+  final String? defaultImagePath;
 
   ImageEditorPro({
     required this.appBarColor,
@@ -48,6 +49,7 @@ class ImageEditorPro extends StatefulWidget {
     required this.pathSave,
     required this.pixelRatio,
     this.defaultImage,
+    this.defaultImagePath,
   });
 
   @override
@@ -117,10 +119,16 @@ class _ImageEditorProState extends State<ImageEditorPro> {
   }
 
   Future<void> setupDefaultImage() async {
-    if (widget.defaultImage == null) return;
+    if (widget.defaultImage == null && widget.defaultImagePath == null) return;
+
+    var imagePath = widget.defaultImagePath ?? '';
+    if (widget.defaultImage != null) {
+      imagePath = widget.defaultImage!.path;
+    }
 
     var decodedImage = await decodeImageFromList(
-        File(widget.defaultImage!.path).readAsBytesSync());
+      File(imagePath).readAsBytesSync(),
+    );
 
     setState(() {
       height = decodedImage.height;
