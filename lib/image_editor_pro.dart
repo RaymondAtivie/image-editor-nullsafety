@@ -43,6 +43,7 @@ class ImageEditorPro extends StatefulWidget {
   final XFile? defaultImage;
   final String? defaultImagePath;
   final bool hideCamera;
+  final bool hideClearButton;
   final bool hideSizing;
 
   ImageEditorPro({
@@ -53,6 +54,7 @@ class ImageEditorPro extends StatefulWidget {
     this.defaultImage,
     this.defaultImagePath,
     this.hideCamera = false,
+    this.hideClearButton = false,
     this.hideSizing = false,
   });
 
@@ -228,12 +230,13 @@ class _ImageEditorProState extends State<ImageEditorPro> {
                         );
                       });
                 }),
-          IconButton(
-              onPressed: () {
-                _controller.points.clear();
-                setState(() {});
-              },
-              icon: Icon(Icons.clear)),
+          if (!widget.hideClearButton)
+            IconButton(
+                onPressed: () {
+                  _controller.points.clear();
+                  setState(() {});
+                },
+                icon: Icon(Icons.clear)),
           if (!widget.hideCamera)
             IconButton(
                 onPressed: () {
@@ -339,210 +342,210 @@ class _ImageEditorProState extends State<ImageEditorPro> {
                       },
                       title: 'Text',
                     ),
-                    BottomBarContainer(
-                      colors: widget.bottomBarColor,
-                      icons: Icons.flip,
-                      ontap: () {
-                        setState(() {
-                          flipValue = flipValue == 0 ? math.pi : 0;
-                        });
-                      },
-                      title: 'Flip',
-                    ),
-                    BottomBarContainer(
-                      colors: widget.bottomBarColor,
-                      icons: Icons.rotate_left,
-                      ontap: () {
-                        setState(() {
-                          rotateValue--;
-                        });
-                      },
-                      title: 'Rotate left',
-                    ),
-                    BottomBarContainer(
-                      colors: widget.bottomBarColor,
-                      icons: Icons.rotate_right,
-                      ontap: () {
-                        setState(() {
-                          rotateValue++;
-                        });
-                      },
-                      title: 'Rotate right',
-                    ),
-                    BottomBarContainer(
-                      colors: widget.bottomBarColor,
-                      icons: Icons.blur_on,
-                      ontap: () {
-                        showModalBottomSheet(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(10),
-                              topLeft: Radius.circular(10),
-                            ),
-                          ),
-                          context: context,
-                          builder: (context) {
-                            return StatefulBuilder(
-                              builder: (context, setS) {
-                                return Container(
-                                  padding: EdgeInsets.all(20),
-                                  height: 400,
-                                  decoration: BoxDecoration(
-                                    color: Colors.black87,
-                                    borderRadius: BorderRadius.only(
-                                        topRight: Radius.circular(10),
-                                        topLeft: Radius.circular(10)),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Center(
-                                        child: Text(
-                                          'Slider Filter Color'.toUpperCase(),
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                      ),
-                                      Divider(
+                    // BottomBarContainer(
+                    //   colors: widget.bottomBarColor,
+                    //   icons: Icons.flip,
+                    //   ontap: () {
+                    //     setState(() {
+                    //       flipValue = flipValue == 0 ? math.pi : 0;
+                    //     });
+                    //   },
+                    //   title: 'Flip',
+                    // ),
+                    // BottomBarContainer(
+                    //   colors: widget.bottomBarColor,
+                    //   icons: Icons.rotate_left,
+                    //   ontap: () {
+                    //     setState(() {
+                    //       rotateValue--;
+                    //     });
+                    //   },
+                    //   title: 'Rotate left',
+                    // ),
+                    // BottomBarContainer(
+                    //   colors: widget.bottomBarColor,
+                    //   icons: Icons.rotate_right,
+                    //   ontap: () {
+                    //     setState(() {
+                    //       rotateValue++;
+                    //     });
+                    //   },
+                    //   title: 'Rotate right',
+                    // ),
+                    // BottomBarContainer(
+                    //   colors: widget.bottomBarColor,
+                    //   icons: Icons.blur_on,
+                    //   ontap: () {
+                    //     showModalBottomSheet(
+                    //       shape: RoundedRectangleBorder(
+                    //         borderRadius: BorderRadius.only(
+                    //           topRight: Radius.circular(10),
+                    //           topLeft: Radius.circular(10),
+                    //         ),
+                    //       ),
+                    //       context: context,
+                    //       builder: (context) {
+                    //         return StatefulBuilder(
+                    //           builder: (context, setS) {
+                    //             return Container(
+                    //               padding: EdgeInsets.all(20),
+                    //               height: 400,
+                    //               decoration: BoxDecoration(
+                    //                 color: Colors.black87,
+                    //                 borderRadius: BorderRadius.only(
+                    //                     topRight: Radius.circular(10),
+                    //                     topLeft: Radius.circular(10)),
+                    //               ),
+                    //               child: Column(
+                    //                 children: [
+                    //                   Center(
+                    //                     child: Text(
+                    //                       'Slider Filter Color'.toUpperCase(),
+                    //                       style: TextStyle(color: Colors.white),
+                    //                     ),
+                    //                   ),
+                    //                   Divider(
 
-                                          // height: 1,
-                                          ),
-                                      const SizedBox(
-                                        height: 20.0,
-                                      ),
-                                      Text(
-                                        'Slider Color'.toUpperCase(),
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Expanded(
-                                            child: BarColorPicker(
-                                                width: 300,
-                                                thumbColor: Colors.white,
-                                                cornerRadius: 10,
-                                                pickMode: PickMode.Color,
-                                                colorListener: (int value) {
-                                                  setS(() {
-                                                    setState(() {
-                                                      colorValue = Color(value);
-                                                    });
-                                                  });
-                                                }),
-                                          ),
-                                          TextButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                setS(() {
-                                                  colorValue =
-                                                      Colors.transparent;
-                                                });
-                                              });
-                                            },
-                                            child: Text(
-                                              'Reset',
-                                              style: TextStyle(
-                                                  color: Colors.white),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 5.0,
-                                      ),
-                                      Text(
-                                        'Slider Blur'.toUpperCase(),
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                      const SizedBox(
-                                        height: 10.0,
-                                      ),
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                            child: Slider(
-                                                activeColor: Colors.white,
-                                                inactiveColor: Colors.grey,
-                                                value: blurValue,
-                                                min: 0.0,
-                                                max: 10.0,
-                                                onChanged: (v) {
-                                                  setS(() {
-                                                    setState(() {
-                                                      blurValue = v;
-                                                    });
-                                                  });
-                                                }),
-                                          ),
-                                          TextButton(
-                                            onPressed: () {
-                                              setS(() {
-                                                setState(() {
-                                                  blurValue = 0.0;
-                                                });
-                                              });
-                                            },
-                                            child: Text(
-                                              'Reset'.toUpperCase(),
-                                              style: TextStyle(
-                                                  color: Colors.white),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 5.0,
-                                      ),
-                                      Text(
-                                        'Slider Opacity',
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                      const SizedBox(
-                                        height: 10.0,
-                                      ),
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                            child: Slider(
-                                                activeColor: Colors.white,
-                                                inactiveColor: Colors.grey,
-                                                value: opacityValue,
-                                                min: 0.00,
-                                                max: 1.0,
-                                                onChanged: (v) {
-                                                  setS(() {
-                                                    setState(() {
-                                                      opacityValue = v;
-                                                    });
-                                                  });
-                                                }),
-                                          ),
-                                          TextButton(
-                                            onPressed: () {
-                                              setS(() {
-                                                setState(() {
-                                                  opacityValue = 0.0;
-                                                });
-                                              });
-                                            },
-                                            child: Text(
-                                              'Reset'.toUpperCase(),
-                                              style: TextStyle(
-                                                  color: Colors.white),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                        );
-                      },
-                      title: 'Blur',
-                    ),
+                    //                       // height: 1,
+                    //                       ),
+                    //                   const SizedBox(
+                    //                     height: 20.0,
+                    //                   ),
+                    //                   Text(
+                    //                     'Slider Color'.toUpperCase(),
+                    //                     style: TextStyle(color: Colors.white),
+                    //                   ),
+                    //                   Row(
+                    //                     crossAxisAlignment:
+                    //                         CrossAxisAlignment.center,
+                    //                     children: [
+                    //                       Expanded(
+                    //                         child: BarColorPicker(
+                    //                             width: 300,
+                    //                             thumbColor: Colors.white,
+                    //                             cornerRadius: 10,
+                    //                             pickMode: PickMode.Color,
+                    //                             colorListener: (int value) {
+                    //                               setS(() {
+                    //                                 setState(() {
+                    //                                   colorValue = Color(value);
+                    //                                 });
+                    //                               });
+                    //                             }),
+                    //                       ),
+                    //                       TextButton(
+                    //                         onPressed: () {
+                    //                           setState(() {
+                    //                             setS(() {
+                    //                               colorValue =
+                    //                                   Colors.transparent;
+                    //                             });
+                    //                           });
+                    //                         },
+                    //                         child: Text(
+                    //                           'Reset',
+                    //                           style: TextStyle(
+                    //                               color: Colors.white),
+                    //                         ),
+                    //                       ),
+                    //                     ],
+                    //                   ),
+                    //                   const SizedBox(
+                    //                     height: 5.0,
+                    //                   ),
+                    //                   Text(
+                    //                     'Slider Blur'.toUpperCase(),
+                    //                     style: TextStyle(color: Colors.white),
+                    //                   ),
+                    //                   const SizedBox(
+                    //                     height: 10.0,
+                    //                   ),
+                    //                   Row(
+                    //                     children: [
+                    //                       Expanded(
+                    //                         child: Slider(
+                    //                             activeColor: Colors.white,
+                    //                             inactiveColor: Colors.grey,
+                    //                             value: blurValue,
+                    //                             min: 0.0,
+                    //                             max: 10.0,
+                    //                             onChanged: (v) {
+                    //                               setS(() {
+                    //                                 setState(() {
+                    //                                   blurValue = v;
+                    //                                 });
+                    //                               });
+                    //                             }),
+                    //                       ),
+                    //                       TextButton(
+                    //                         onPressed: () {
+                    //                           setS(() {
+                    //                             setState(() {
+                    //                               blurValue = 0.0;
+                    //                             });
+                    //                           });
+                    //                         },
+                    //                         child: Text(
+                    //                           'Reset'.toUpperCase(),
+                    //                           style: TextStyle(
+                    //                               color: Colors.white),
+                    //                         ),
+                    //                       ),
+                    //                     ],
+                    //                   ),
+                    //                   const SizedBox(
+                    //                     height: 5.0,
+                    //                   ),
+                    //                   Text(
+                    //                     'Slider Opacity',
+                    //                     style: TextStyle(color: Colors.white),
+                    //                   ),
+                    //                   const SizedBox(
+                    //                     height: 10.0,
+                    //                   ),
+                    //                   Row(
+                    //                     children: [
+                    //                       Expanded(
+                    //                         child: Slider(
+                    //                             activeColor: Colors.white,
+                    //                             inactiveColor: Colors.grey,
+                    //                             value: opacityValue,
+                    //                             min: 0.00,
+                    //                             max: 1.0,
+                    //                             onChanged: (v) {
+                    //                               setS(() {
+                    //                                 setState(() {
+                    //                                   opacityValue = v;
+                    //                                 });
+                    //                               });
+                    //                             }),
+                    //                       ),
+                    //                       TextButton(
+                    //                         onPressed: () {
+                    //                           setS(() {
+                    //                             setState(() {
+                    //                               opacityValue = 0.0;
+                    //                             });
+                    //                           });
+                    //                         },
+                    //                         child: Text(
+                    //                           'Reset'.toUpperCase(),
+                    //                           style: TextStyle(
+                    //                               color: Colors.white),
+                    //                         ),
+                    //                       ),
+                    //                     ],
+                    //                   ),
+                    //                 ],
+                    //               ),
+                    //             );
+                    //           },
+                    //         );
+                    //       },
+                    //     );
+                    //   },
+                    //   title: 'Blur',
+                    // ),
                     BottomBarContainer(
                       colors: widget.bottomBarColor,
                       icons: FontAwesomeIcons.eraser,
@@ -556,193 +559,193 @@ class _ImageEditorProState extends State<ImageEditorPro> {
                       },
                       title: 'Eraser',
                     ),
-                    BottomBarContainer(
-                      colors: widget.bottomBarColor,
-                      icons: Icons.photo,
-                      ontap: () {
-                        showModalBottomSheet(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(10),
-                                topLeft: Radius.circular(10),
-                              ),
-                            ),
-                            context: context,
-                            builder: (context) {
-                              return Container(
-                                height: 300,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.only(
-                                      topRight: Radius.circular(10),
-                                      topLeft: Radius.circular(10)),
-                                  color: Colors.black87,
-                                ),
-                                child: StatefulBuilder(
-                                  builder: (context, setS) {
-                                    return Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        const SizedBox(
-                                          height: 5.0,
-                                        ),
-                                        Text(
-                                          'Slider Hue'.toUpperCase(),
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                        const SizedBox(
-                                          height: 10.0,
-                                        ),
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: Slider(
-                                                  activeColor: Colors.white,
-                                                  inactiveColor: Colors.grey,
-                                                  value: hueValue,
-                                                  min: -10.0,
-                                                  max: 10.0,
-                                                  onChanged: (v) {
-                                                    setS(() {
-                                                      setState(() {
-                                                        hueValue = v;
-                                                      });
-                                                    });
-                                                  }),
-                                            ),
-                                            TextButton(
-                                              onPressed: () {
-                                                setS(() {
-                                                  setState(() {
-                                                    blurValue = 0.0;
-                                                  });
-                                                });
-                                              },
-                                              child: Text(
-                                                'Reset',
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          height: 5.0,
-                                        ),
-                                        Text(
-                                          'Slider Saturation',
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                        const SizedBox(
-                                          height: 10.0,
-                                        ),
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: Slider(
-                                                  activeColor: Colors.white,
-                                                  inactiveColor: Colors.grey,
-                                                  value: saturationValue,
-                                                  min: -10.0,
-                                                  max: 10.0,
-                                                  onChanged: (v) {
-                                                    setS(() {
-                                                      setState(() {
-                                                        saturationValue = v;
-                                                      });
-                                                    });
-                                                  }),
-                                            ),
-                                            TextButton(
-                                              onPressed: () {
-                                                setS(() {
-                                                  setState(() {
-                                                    saturationValue = 0.0;
-                                                  });
-                                                });
-                                              },
-                                              child: Text(
-                                                'Reset',
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          height: 5.0,
-                                        ),
-                                        Text(
-                                          'Slider Brightness',
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                        const SizedBox(
-                                          height: 10.0,
-                                        ),
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: Slider(
-                                                  activeColor: Colors.white,
-                                                  inactiveColor: Colors.grey,
-                                                  value: brightnessValue,
-                                                  min: 0.0,
-                                                  max: 1.0,
-                                                  onChanged: (v) {
-                                                    setS(() {
-                                                      setState(() {
-                                                        brightnessValue = v;
-                                                      });
-                                                    });
-                                                  }),
-                                            ),
-                                            TextButton(
-                                              onPressed: () {
-                                                setS(() {
-                                                  setState(() {
-                                                    brightnessValue = 0.0;
-                                                  });
-                                                });
-                                              },
-                                              child: Text(
-                                                'Reset',
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                ),
-                              );
-                            });
-                      },
-                      title: 'Filter',
-                    ),
-                    BottomBarContainer(
-                      colors: widget.bottomBarColor,
-                      icons: FontAwesomeIcons.smile,
-                      ontap: () {
-                        var getemojis = showModalBottomSheet(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return Emojies();
-                            });
-                        getemojis.then((value) {
-                          if (value['name'] != null) {
-                            type.add(1);
-                            widgetJson.add(value);
-                            //    fontsize.add(20);
-                            offsets.add(Offset.zero);
-                            //  multiwidget.add(value);
-                            howmuchwidgetis++;
-                          }
-                        });
-                      },
-                      title: 'Emoji',
-                    ),
+                    // BottomBarContainer(
+                    //   colors: widget.bottomBarColor,
+                    //   icons: Icons.photo,
+                    //   ontap: () {
+                    //     showModalBottomSheet(
+                    //         shape: RoundedRectangleBorder(
+                    //           borderRadius: BorderRadius.only(
+                    //             topRight: Radius.circular(10),
+                    //             topLeft: Radius.circular(10),
+                    //           ),
+                    //         ),
+                    //         context: context,
+                    //         builder: (context) {
+                    //           return Container(
+                    //             height: 300,
+                    //             decoration: BoxDecoration(
+                    //               borderRadius: BorderRadius.only(
+                    //                   topRight: Radius.circular(10),
+                    //                   topLeft: Radius.circular(10)),
+                    //               color: Colors.black87,
+                    //             ),
+                    //             child: StatefulBuilder(
+                    //               builder: (context, setS) {
+                    //                 return Column(
+                    //                   crossAxisAlignment:
+                    //                       CrossAxisAlignment.center,
+                    //                   children: [
+                    //                     const SizedBox(
+                    //                       height: 5.0,
+                    //                     ),
+                    //                     Text(
+                    //                       'Slider Hue'.toUpperCase(),
+                    //                       style: TextStyle(color: Colors.white),
+                    //                     ),
+                    //                     const SizedBox(
+                    //                       height: 10.0,
+                    //                     ),
+                    //                     Row(
+                    //                       children: [
+                    //                         Expanded(
+                    //                           child: Slider(
+                    //                               activeColor: Colors.white,
+                    //                               inactiveColor: Colors.grey,
+                    //                               value: hueValue,
+                    //                               min: -10.0,
+                    //                               max: 10.0,
+                    //                               onChanged: (v) {
+                    //                                 setS(() {
+                    //                                   setState(() {
+                    //                                     hueValue = v;
+                    //                                   });
+                    //                                 });
+                    //                               }),
+                    //                         ),
+                    //                         TextButton(
+                    //                           onPressed: () {
+                    //                             setS(() {
+                    //                               setState(() {
+                    //                                 blurValue = 0.0;
+                    //                               });
+                    //                             });
+                    //                           },
+                    //                           child: Text(
+                    //                             'Reset',
+                    //                             style: TextStyle(
+                    //                                 color: Colors.white),
+                    //                           ),
+                    //                         ),
+                    //                       ],
+                    //                     ),
+                    //                     const SizedBox(
+                    //                       height: 5.0,
+                    //                     ),
+                    //                     Text(
+                    //                       'Slider Saturation',
+                    //                       style: TextStyle(color: Colors.white),
+                    //                     ),
+                    //                     const SizedBox(
+                    //                       height: 10.0,
+                    //                     ),
+                    //                     Row(
+                    //                       children: [
+                    //                         Expanded(
+                    //                           child: Slider(
+                    //                               activeColor: Colors.white,
+                    //                               inactiveColor: Colors.grey,
+                    //                               value: saturationValue,
+                    //                               min: -10.0,
+                    //                               max: 10.0,
+                    //                               onChanged: (v) {
+                    //                                 setS(() {
+                    //                                   setState(() {
+                    //                                     saturationValue = v;
+                    //                                   });
+                    //                                 });
+                    //                               }),
+                    //                         ),
+                    //                         TextButton(
+                    //                           onPressed: () {
+                    //                             setS(() {
+                    //                               setState(() {
+                    //                                 saturationValue = 0.0;
+                    //                               });
+                    //                             });
+                    //                           },
+                    //                           child: Text(
+                    //                             'Reset',
+                    //                             style: TextStyle(
+                    //                                 color: Colors.white),
+                    //                           ),
+                    //                         ),
+                    //                       ],
+                    //                     ),
+                    //                     const SizedBox(
+                    //                       height: 5.0,
+                    //                     ),
+                    //                     Text(
+                    //                       'Slider Brightness',
+                    //                       style: TextStyle(color: Colors.white),
+                    //                     ),
+                    //                     const SizedBox(
+                    //                       height: 10.0,
+                    //                     ),
+                    //                     Row(
+                    //                       children: [
+                    //                         Expanded(
+                    //                           child: Slider(
+                    //                               activeColor: Colors.white,
+                    //                               inactiveColor: Colors.grey,
+                    //                               value: brightnessValue,
+                    //                               min: 0.0,
+                    //                               max: 1.0,
+                    //                               onChanged: (v) {
+                    //                                 setS(() {
+                    //                                   setState(() {
+                    //                                     brightnessValue = v;
+                    //                                   });
+                    //                                 });
+                    //                               }),
+                    //                         ),
+                    //                         TextButton(
+                    //                           onPressed: () {
+                    //                             setS(() {
+                    //                               setState(() {
+                    //                                 brightnessValue = 0.0;
+                    //                               });
+                    //                             });
+                    //                           },
+                    //                           child: Text(
+                    //                             'Reset',
+                    //                             style: TextStyle(
+                    //                                 color: Colors.white),
+                    //                           ),
+                    //                         ),
+                    //                       ],
+                    //                     ),
+                    //                   ],
+                    //                 );
+                    //               },
+                    //             ),
+                    //           );
+                    //         });
+                    //   },
+                    //   title: 'Filter',
+                    // ),
+                    // BottomBarContainer(
+                    //   colors: widget.bottomBarColor,
+                    //   icons: FontAwesomeIcons.smile,
+                    //   ontap: () {
+                    //     var getemojis = showModalBottomSheet(
+                    //         context: context,
+                    //         builder: (BuildContext context) {
+                    //           return Emojies();
+                    //         });
+                    //     getemojis.then((value) {
+                    //       if (value['name'] != null) {
+                    //         type.add(1);
+                    //         widgetJson.add(value);
+                    //         //    fontsize.add(20);
+                    //         offsets.add(Offset.zero);
+                    //         //  multiwidget.add(value);
+                    //         howmuchwidgetis++;
+                    //       }
+                    //     });
+                    //   },
+                    //   title: 'Emoji',
+                    // ),
                   ],
                 ),
               ),
